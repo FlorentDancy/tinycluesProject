@@ -36,11 +36,60 @@ angular.module('equipmentsApp.controllers', [])
 
         $scope.currentLat = position.coords.latitude;
         $scope.currentLon = position.coords.longitude;
-        $scope.map = { center: { latitude: $scope.currentLat, longitude: $scope.currentLon }, zoom: 8 };
+        $scope.map = { center: { latitude: $scope.currentLat, longitude: $scope.currentLon }, zoom: 15 };
 
       }
 
 
+    });
+
+angular.module('appMaps', ['uiGmapgoogle-maps'])
+    .controller('mainCtrl', function($scope) {
+      $scope.map = {
+        center: {
+          latitude: 40.1451,
+          longitude: -99.6680
+        },
+        zoom: 4,
+        bounds: {}
+      };
+      $scope.options = {
+        scrollwheel: false
+      };
+      var createRandomMarker = function(i, bounds, idKey) {
+        var lat_min = bounds.southwest.latitude,
+            lat_range = bounds.northeast.latitude - lat_min,
+            lng_min = bounds.southwest.longitude,
+            lng_range = bounds.northeast.longitude - lng_min;
+
+        if (idKey == null) {
+          idKey = "id";
+        }
+
+        var latitude = lat_min + (Math.random() * lat_range);
+        var longitude = lng_min + (Math.random() * lng_range);
+        var ret = {
+          latitude: latitude,
+          longitude: longitude,
+          title: 'm' + i
+        };
+        ret[idKey] = i;
+        return ret;
+      };
+      $scope.favoritesMarkers = [];
+      // Get the bounds from the map once it's loaded
+      $scope.$watch(function() {
+        return $scope.map.bounds;
+      }, function(nv, ov) {
+        // Only need to regenerate once
+        if (!ov.southwest && nv.southwest) {
+          var markers = [];
+          for (var i = 0; i < 50; i++) {
+            markers.push(createRandomMarker(i, $scope.map.bounds))
+          }
+          $scope.favoritesMarkers = markers;
+        }
+      }, true);
     });
 var toto = {};
 
@@ -67,7 +116,7 @@ $( document ).ready(function() {
 
 
 angular.module('equipmentsApp', [
-    'equipmentsApp.controllers','favoriteFilter','uiGmapgoogle-maps'
+    'equipmentsApp.controllers','favoriteFilter','uiGmapgoogle-maps','appMaps'
 ]);
 angular.module('favoriteFilter', [])
     .filter('favorite',function(){
