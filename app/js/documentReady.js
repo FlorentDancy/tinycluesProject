@@ -5,20 +5,20 @@ $( document ).ready(function() {
     getLocation();
 
     var urlParis = 'https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/';
-    var token= "475bd14e06b3adaee2a6209b5ffc174d3837b1101e467e25689f6a029e66b466";
+    var token= "";
     var cid = "27,29";
     var offset = 0;
     var limit= 10;
     var radius= 1000;
 
-    $.ajax({
+    /*$.ajax({
         type: "GET",
         url: urlParis,
         data: { token: token, cid: cid, offset: offset, limit: limit, lat: lat, lon: lon, radius:radius }
     })
     .done(function( data ) {
         console.log(data);
-    });
+    });*/
 
 });
 

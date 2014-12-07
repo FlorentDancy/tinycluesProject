@@ -17,24 +17,77 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </head>
 
-<body ng-app="equipmentsApp" ng-controller="equipmentsController">
+<body >
 
-  <table class="equipmentsTable">
-    <thead>
-      <tr>
-        <th colspan="5">Liste des équipements autour de vous</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="equipment in equipments">
-        <td>{{equipment.name}}</td>
-        <td>{{equipment.adress}}</td>
-        <td>{{equipment.postalCode}}</td>
-        <td>{{equipment.latitude}}</td>
-        <td>{{equipment.longitude}}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="row" ng-app="equipmentsApp" ng-controller="equipmentsController">
+    <div class="col-md-6">
+      <table class="equipmentsTable table">
+        <thead>
+          <tr>
+            <th colspan="3">Liste des équipements autour de vous</th>
+            <th colspan="2">
+              <input type="text" ng-model="equipment.name"/>
+            </th>
+            <th>
+              <button type="submit" class="btn btn-success">ADD</button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td></td>
+            <td>Nom</td>
+            <td>Adresse</td>
+            <td>Code Postal</td>
+            <td>Latitude</td>
+            <td>Longitude</td>
+          </tr>
+          <tr ng-repeat="equipment in equipments | filter:equipment" >
+            <td><input type="checkbox" class="checkbox checkbox_{{$index}}" ng-model="equipment.checked"/></td>
+            <td>{{equipment.name}}</td>
+            <td>{{equipment.adress}}</td>
+            <td>{{equipment.postalCode}}</td>
+            <td>{{equipment.latitude}}</td>
+            <td>{{equipment.longitude}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-md-6">
+      <table class="favorisTable table">
+        <thead>
+        <tr>
+          <th>
+            <button type="submit" class="btn btn-danger">DELETE</button>
+          </th>
+          <th colspan="3">Favoris</th>
+          <th colspan="2">
+            <input type="text" ng-model="favoriteName.name"/>
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td></td>
+            <td>Nom</td>
+            <td>Adresse</td>
+            <td>Code Postal</td>
+            <td>Latitude</td>
+            <td>Longitude</td>
+          </tr>
+          <tr ng-repeat="equipment in equipments | favorite | filter:favoriteName">
+            <td>{{equipment.name}}</td>
+            <td>{{equipment.adress}}</td>
+            <td>{{equipment.postalCode}}</td>
+            <td>{{equipment.latitude}}</td>
+            <td>{{equipment.longitude}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
 
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>

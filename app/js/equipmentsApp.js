@@ -1,3 +1,3 @@
 angular.module('equipmentsApp', [
-    'equipmentsApp.controllers'
+    'equipmentsApp.controllers','favoriteFilter'
 ]);
