@@ -1,3 +1,3 @@
 angular.module('equipmentsApp', [
-    'equipmentsApp.controllers','favoriteFilter'
+    'equipmentsApp.controllers','favoriteFilter','uiGmapgoogle-maps'
 ]);

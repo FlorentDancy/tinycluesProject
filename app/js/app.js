@@ -1,5 +1,10 @@
 angular.module('equipmentsApp.controllers', [])
     .controller('equipmentsController', function($scope/*,$resource*/) {
+
+      $scope.map = { center: { latitude: 0, longitude: 0 }, zoom: 8 };
+
+      getLocation();
+
       $scope.equipments = [
         {
           checked : false,
@@ -18,12 +23,29 @@ angular.module('equipmentsApp.controllers', [])
           longitude: 2.223838
         }
       ];
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+          $('body').append("Geolocation is not supported by this browser.");
+        }
+      }
+
+      function showPosition(position) {
+
+        $scope.currentLat = position.coords.latitude;
+        $scope.currentLon = position.coords.longitude;
+        $scope.map = { center: { latitude: $scope.currentLat, longitude: $scope.currentLon }, zoom: 8 };
+
+      }
+
+
     });
+var toto = {};
+
 $( document ).ready(function() {
 
-    var lat,lon;
-
-    getLocation();
 
     var urlParis = 'https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/';
     var token= "";
@@ -43,20 +65,9 @@ $( document ).ready(function() {
 
 });
 
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-        $('body').append("Geolocation is not supported by this browser.");
-    }
-}
 
-function showPosition(position) {
-    lat = position.coords.latitude;
-    lon = position.coords.longitude;
-}
 angular.module('equipmentsApp', [
-    'equipmentsApp.controllers','favoriteFilter'
+    'equipmentsApp.controllers','favoriteFilter','uiGmapgoogle-maps'
 ]);
 angular.module('favoriteFilter', [])
     .filter('favorite',function(){

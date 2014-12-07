@@ -1,8 +1,7 @@
+var toto = {};
+
 $( document ).ready(function() {
 
-    var lat,lon;
-
-    getLocation();
 
     var urlParis = 'https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/';
     var token= "";
@@ -22,15 +21,3 @@ $( document ).ready(function() {
 
 });
 
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-        $('body').append("Geolocation is not supported by this browser.");
-    }
-}
-
-function showPosition(position) {
-    lat = position.coords.latitude;
-    lon = position.coords.longitude;
-}

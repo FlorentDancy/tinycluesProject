@@ -80,12 +80,23 @@
       </table>
     </div>
 
+    <div class="col-md-12">
+      <ui-gmap-google-map center='map.center' zoom='map.zoom'></ui-gmap-google-map>
+    </div>
+
+
+
   </div>
+
+
 
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="js/app.min.js"></script>
   <script src="js/controllers.js"></script>
+  <script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>
+  <script src="bower_components/lodash/dist/lodash.min.js"></script>
+  <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
   <!--<script src="view1/view1.js"></script>
   <script src="view2/view2.js"></script>-->
   <script src="../components/version/version.js"></script>
