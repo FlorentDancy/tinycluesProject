@@ -1,9 +1,7 @@
 angular.module('equipmentsApp.controllers', [])
     .controller('equipmentsController', function($scope/*,$resource*/) {
 
-      $scope.map = { center: { latitude: 0, longitude: 0 }, zoom: 8 };
-
-      getLocation();
+      $scope.favorites = [];
 
       $scope.equipments = [
         {
@@ -24,39 +22,21 @@ angular.module('equipmentsApp.controllers', [])
         }
       ];
 
-      function getLocation() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-          $('body').append("Geolocation is not supported by this browser.");
-        }
-      }
-
-      function showPosition(position) {
-
-        $scope.currentLat = position.coords.latitude;
-        $scope.currentLon = position.coords.longitude;
-        $scope.map = { center: { latitude: $scope.currentLat, longitude: $scope.currentLon }, zoom: 15 };
-
-      }
-
-
     });
+
 
 angular.module('appMaps', ['uiGmapgoogle-maps'])
     .controller('mainCtrl', function($scope) {
-      $scope.map = {
-        center: {
-          latitude: 40.1451,
-          longitude: -99.6680
-        },
-        zoom: 4,
-        bounds: {}
-      };
+
+      $scope.map = { center: { latitude: 0, longitude: 0 }, zoom: 8 };
+
+      getLocation();
+
       $scope.options = {
-        scrollwheel: false
+
       };
-      var createRandomMarker = function(i, bounds, idKey) {
+
+      /*var createRandomMarker = function(i, bounds, idKey) {
         var lat_min = bounds.southwest.latitude,
             lat_range = bounds.northeast.latitude - lat_min,
             lng_min = bounds.southwest.longitude,
@@ -75,8 +55,19 @@ angular.module('appMaps', ['uiGmapgoogle-maps'])
         };
         ret[idKey] = i;
         return ret;
-      };
-      $scope.favoritesMarkers = [];
+      };*/
+
+
+
+
+      $scope.favoritesMarkers = [
+        {
+          lattitude: $scope.currentLat,
+          longitude: $scope.currentLon,
+          title: "Current Position"
+        }
+      ];
+
       // Get the bounds from the map once it's loaded
       $scope.$watch(function() {
         return $scope.map.bounds;
@@ -84,17 +75,40 @@ angular.module('appMaps', ['uiGmapgoogle-maps'])
         // Only need to regenerate once
         if (!ov.southwest && nv.southwest) {
           var markers = [];
-          for (var i = 0; i < 50; i++) {
-            markers.push(createRandomMarker(i, $scope.map.bounds))
+          for (var i = 0; i < $scope.favorites.length; i++) {
+            var ret = {
+              latitude: $scope.favorites[i].latitude,
+              longitude: $scope.favorites[i].longitude,
+              title: $scope.favorites[i].title
+            };
+            markers.push(ret)
           }
           $scope.favoritesMarkers = markers;
         }
       }, true);
+
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+          $('body').append("Geolocation is not supported by this browser.");
+        }
+      }
+
+      function showPosition(position) {
+        $scope.currentLat = position.coords.latitude;
+        $scope.currentLon = position.coords.longitude;
+        $scope.map = {
+          center: {
+            latitude: $scope.currentLat, longitude: $scope.currentLon
+          },
+          zoom: 15,
+          bounds: {}
+        };
+      }
     });
-var toto = {};
-
 $( document ).ready(function() {
-
 
     var urlParis = 'https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/';
     var token= "";
@@ -119,16 +133,15 @@ angular.module('equipmentsApp', [
     'equipmentsApp.controllers','favoriteFilter','uiGmapgoogle-maps','appMaps'
 ]);
 angular.module('favoriteFilter', [])
-    .filter('favorite',function(){
+    .filter('favorite',function($scope){
         return function(equipmentsToFilter){
-            var i, result =[];
+            var i;
 
             for(i=0;i<equipmentsToFilter.length;i++){
-                //TODO Is Checked non fonctionnel ici (pas rebindé à chaque fois)
                 if(equipmentsToFilter[i].checked){
-                    result.push(equipmentsToFilter[i]);
+                    $scope.favorites.push(equipmentsToFilter[i])
                 }
             }
-            return result;
+            return $scope.favorites;
         };
     });

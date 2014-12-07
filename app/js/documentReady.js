@@ -1,7 +1,4 @@
-var toto = {};
-
 $( document ).ready(function() {
-
 
     var urlParis = 'https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/';
     var token= "";

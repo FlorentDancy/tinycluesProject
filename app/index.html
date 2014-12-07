@@ -80,13 +80,11 @@
       </table>
     </div>
 
-    <div class="col-md-10 col-md-offset-1" id="map_canvas" ng-controller="mainCtrl">
-      <div >
-        <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" options="options" bounds="map.bounds">
-          <ui-gmap-markers models="favoritesMarkers" coords="'self'" icon="'icon'">
-          </ui-gmap-markers>
-        </ui-gmap-google-map>
-      </div>
+    <div ng-controller="mainCtrl" class="col-md-10 col-md-offset-1" id="map_canvas">
+      <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" options="options" bounds="map.bounds">
+        <ui-gmap-markers models="favoritesMarkers" coords="'self'" icon="'icon'">
+        </ui-gmap-markers>
+      </ui-gmap-google-map>
     </div>
 
 
@@ -97,8 +95,8 @@
 
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
-  <script src="js/app.min.js"></script>
-  <script src="js/controllers.js"></script>
+  <script src="js/app.js"></script>
+  <!--<script src="js/controllers.js"></script>-->
   <script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>
   <script src="bower_components/lodash/dist/lodash.min.js"></script>
   <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
