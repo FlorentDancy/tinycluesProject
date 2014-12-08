@@ -42,8 +42,8 @@
           <tr ng-repeat="equipment in equipments | filter:equipment" >
             <td><input type="checkbox" class="checkbox checkbox_{{$index}}" ng-model="equipment.checked"/></td>
             <td>{{equipment.name}}</td>
-            <td>{{equipment.adress}}</td>
-            <td>{{equipment.postalCode}}</td>
+            <td>{{equipment.address}}</td>
+            <td>{{equipment.zipCode}}</td>
             <td>{{equipment.latitude}}</td>
             <td>{{equipment.longitude}}</td>
           </tr>
@@ -71,8 +71,8 @@
           </tr>
           <tr ng-repeat="equipment in equipments  | filter:favoriteName | favorite"> <!-- as favorites-->
             <td>{{equipment.name}}</td>
-            <td>{{equipment.adress}}</td>
-            <td>{{equipment.postalCode}}</td>
+            <td>{{equipment.address}}</td>
+            <td>{{equipment.zipCode}}</td>
             <td>{{equipment.latitude}}</td>
             <td>{{equipment.longitude}}</td>
           </tr>
@@ -97,6 +97,7 @@
 
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="http://code.angularjs.org/1.0.1/angular-resource-1.0.1.js"></script>
   <script src="js/app.js"></script>
   <!--<script src="js/controllers.js"></script>-->
   <script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>

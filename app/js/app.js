@@ -1,62 +1,51 @@
-angular.module('equipmentsApp.controllers', [])
-.controller('equipmentsController', function($scope) {
+angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
+.controller('equipmentsController',function($scope,$resource/*,getCurrentLocation*/) {
 
-      //https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/?token=ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1&cid=27,29&offset=0&limit=20&lat=48.853094&lon=2.349647&radius=1000
+        var temp1 = $resource(
+            'https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/?:path',
+            {path:"@path"}
+        );
 
-      /*var baseURL = "https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/";
-      var EquipmentsDataResource = $resource(baseURL+'?token=ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1' +
-          '&cid=:cid' +
-          '&offset=:offset' +
-          '&limit=:limit' +
-          '&lat=:lat' +
-          '&lon=:lon' +
-          '&radius=:radius',
-          {
-            cid:'@cid',
-            offset:'@offset',
-            limit:'@limit',
-            lat:'@lat',
-            lon:'@lon',
-            radius:'@radius'
-          },
-          {'get': {method: 'GET' }}
-      );
+        var temp2 = $resource(
+            'https://api.paris.fr/api/data/1.0/Equipements/get_equipement/?:path',
+            {path:"@path"}
+        );
 
-      $scope.Equipment = EquipmentsDataResource;
-      $scope.listEquipments = function() {
-        // call static query() method of Friend class
-        $scope.Equipment.query(function (data) {
-          $scope.equipments = data;
-        }, function(err) {
-          console.log("Equipment.query() error : "+err);
-        });
-      };
+        getLocation();
 
-      $scope.listEquipments();*/
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                $('body').append("Geolocation is not supported by this browser.");
+            }
+        }
 
-      /*var urlParis = 'https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/';
-      var token= "ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1";
-      var cid = "27,29";
-      var offset = 0;
-      var limit= 10;
-      var radius= 1000;
-      var lat= 48.853593;
-      var lon= 2.378302;
+        function showPosition(position) {
+            currentLat = position.coords.latitude;
+            currentLon = position.coords.longitude;
 
-      $.ajax({
-       type: "GET",
-       url: urlParis,
-       data: { token: token, cid: cid, offset: offset, limit: limit, lat: lat, lon: lon, radius:radius }
-       })
-       .done(function( data ) {
-       console.log(data);
-       });*/
+            temp1.get({
+                path: "token=ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1&cid=27,29&offset=0&limit=10&lat="+currentLat+"&lon="+currentLon+"&radius=2000"
+            }, function(data) {
+                $scope.equipments = data.data;
+                angular.forEach($scope.equipments,function(value,key){
+                    setTimeout(function(){
+                            var eqId = value.id;
 
-        //TODO Ne pas oublier de pusher
+                            temp2.get({
+                                path: "token=ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1&id=" + eqId
+                            }, function(data) {
+                                value.latitude = data.data[0].lat;
+                                value.longitude = data.data[0].lon;
+                            });
+                        }
+                        , 200*key)
+                });
+            });
+        }
 
-
-
-      $scope.equipments = [
+      /*$scope.equipments = [
         {
           checked : false,
           name: "Maison",
@@ -73,34 +62,46 @@ angular.module('equipmentsApp.controllers', [])
           latitude: 48.827089,
           longitude: 2.223838
         }
-      ];
+      ];*/
 
 });
 
 angular.module('appMaps', ['uiGmapgoogle-maps'])
     .controller('mapCtrl', function($scope, getCurrentLocation, favoritesManager){
 
-    $scope.favoritesMarkers = [];
+        $scope.favoritesMarkers = [];
 
-    //TODO Initialisation le temps que la vraie valeur "current" ne s'active
-        //TODO Enlever une fois le $Q fonctionnel ?
-    $scope.map = {
-    center: {
-      latitude: 48.853094,
-      longitude: 2.349647
-    },
-    zoom: 11
-    };
+        getLocation();
 
-    var markers = [];
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                $('body').append("Geolocation is not supported by this browser.");
+            }
+        }
 
-    //FIXME Bug quand on manipule beaucoup les checkboxs, peut laisser le mauvais icon sur la map
-    $scope.$watch(function() {
-        return favoritesManager.getFavorites();
-    }, function() {
-        console.log("Y'a du changement");
-        markers=[];
-        for (var i = 0; i < favoritesManager.getFavorites().length; i++) {
+        function showPosition(position) {
+            currentLat = position.coords.latitude;
+            currentLon = position.coords.longitude;
+            $scope.map = {
+                center: {
+                    latitude: currentLat,
+                    longitude: currentLon
+                },
+                zoom: 15
+            };
+        }
+
+        var markers = [];
+
+        //FIXME Bug quand on manipule les checkboxs, peut laisser le mauvais icon sur la map
+        $scope.$watch(function() {
+            return favoritesManager.getFavorites();
+        }, function() {
+            console.log("Y'a du changement");
+            markers=[];
+            for (var i = 0; i < favoritesManager.getFavorites().length; i++) {
                 markers.push(
                     {
                         id: i+1,
@@ -111,12 +112,7 @@ angular.module('appMaps', ['uiGmapgoogle-maps'])
                 )
             }
             $scope.favoritesMarkers = markers;
-    }, true);
-
-    //TODO Faire en sorte de récupérer currentLat et currentLon ($Q ? )
-    //$scope.map = { center: { latitude: getCurrentLocation.currentLat, longitude: getCurrentLocation.currentLon }, zoom: 15 };
-
-
+        }, true);
 
     });
 angular.module('equipmentsApp', [
@@ -143,7 +139,17 @@ angular.module('favoriteFilter', [])
         var currentLat = 0;
         var currentLon = 0;
 
-        getLocation();
+        /*
+        *
+        *
+
+        * */
+
+        this.getCurrentLat = function(){
+            getLocation();
+            console.log("currentLat dans getCurrentLat dans service avant return : " + currentLat);
+            return currentLat;
+        };
 
         function getLocation() {
             if (navigator.geolocation) {
@@ -159,7 +165,6 @@ angular.module('favoriteFilter', [])
         }
 
     }
-
 ]);
 
  angular.module("equipmentsApp").service("favoritesManager", [
@@ -179,28 +184,5 @@ angular.module('favoriteFilter', [])
             favorites.push(obj);
         };
     }
-
 ]);
-
- angular.module('equipmentsApp').service('equipmentsData', [
-         function($resource){
-             var baseURL = "https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/";
-             var equipmentsData = $resource(baseURL+'?token=ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1' +
-                 '&cid=:cid' +
-                 '&offset=:offset' +
-                 '&limit=:limit' +
-                 '&lat=:lat' +
-                 '&lon=:lon' +
-                 '&radius=:radius',
-                 {
-                     cid:'@cid',
-                     offset:'@offset',
-                     limit:'@limit',
-                     lat:'@lat',
-                     lon:'@lon',
-                     radius:'@radius'
-                 }
-             );
-         }]
- );
 
