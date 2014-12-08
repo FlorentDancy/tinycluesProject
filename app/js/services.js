@@ -20,13 +20,11 @@
             currentLon = position.coords.longitude;
         }
 
-
     }
 
 ]);
 
-
- /*angular.module("equipmentsApp").service("getFavorites", [
+ angular.module("equipmentsApp").service("favoritesManager", [
     function() {
 
         var favorites = [];
@@ -38,14 +36,18 @@
         this.setFavorites = function(fav){
             favorites = fav;
         };
+
+        this.pushFavorites = function(obj){
+            favorites.push(obj);
+        };
     }
 
-]);*/
-/*
- angular.module('equipmentsApp').factory('EquipmentsData', [
+]);
+
+ angular.module('equipmentsApp').service('equipmentsData', [
          function($resource){
              var baseURL = "https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/";
-             var EquipmentsData = $resource(baseURL+'?token=ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1' +
+             var equipmentsData = $resource(baseURL+'?token=ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1' +
                  '&cid=:cid' +
                  '&offset=:offset' +
                  '&limit=:limit' +
@@ -61,7 +63,6 @@
                      radius:'@radius'
                  }
              );
-             return EquipmentsData;
          }]
- );*/
+ );
 

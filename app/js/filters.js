@@ -1,5 +1,5 @@
 angular.module('favoriteFilter', [])
-    .filter('favorite',function(){
+    .filter('favorite',function(favoritesManager){
         return function(equipmentsToFilter){
             var i, result =[];
 
@@ -8,6 +8,7 @@ angular.module('favoriteFilter', [])
                     result.push(equipmentsToFilter[i]);
                 }
             }
+            favoritesManager.setFavorites(result);
             return result;
         };
     });
