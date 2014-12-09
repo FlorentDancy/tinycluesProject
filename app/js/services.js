@@ -11,8 +11,9 @@
             getLocation.deferred = $q.defer();
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position){
-                    showPosition(position,getLocation.deferred);
-                    getLocation.deferred.resolve("coucou");
+                    showPosition(position);
+                    console.log("resolve");
+                    getLocation.deferred.resolve();
                 });
             } else {
                 $('body').append("Geolocation is not supported by this browser.");
@@ -22,12 +23,9 @@
 
         };
 
-        function showPosition(position,deferred) {
+        function showPosition(position) {
             currentLat = position.coords.latitude;
             currentLon = position.coords.longitude;
-
-            console.log("resolve");
-            //deferred.resolve("coucou");
         }
 
         var getCurrentLat = function(){

@@ -1,6 +1,8 @@
 angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
     .controller('equipmentsController',function($scope,$q,$resource,getCurrentLocation) {
 
+
+        console.log('innit Eq ctrl');
         /*$scope.equipments = [
              {
                  checked : false,
@@ -20,6 +22,8 @@ angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
              }
          ];*/
 
+        $scope.mapReady = false;
+
         console.log("Je suis dans le equipmentsAPP");
 
         getCurrentLocation.getLocation().then(function(){
@@ -27,13 +31,16 @@ angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
             var currentLat = getCurrentLocation.getCurrentLat();
             var currentLon = getCurrentLocation.getCurrentLon();
 
-            $scope.map = {
-                center: {
-                    latitude: currentLat,
-                    longitude: currentLon
-                },
-                zoom: 15
-            };
+            console.log('ready');
+            $scope.mapReady = true;
+
+            // $scope.map = {
+            //     center: {
+            //         latitude: currentLat,
+            //         longitude: currentLon
+            //     },
+            //     zoom: 15
+            // };
 
             console.log("Je suis ICI2");
 
@@ -71,28 +78,25 @@ angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
     });
 
 angular.module('appMaps', ['uiGmapgoogle-maps'])
-    .controller('mapCtrl', function($scope, $q,getCurrentLocation, favoritesManager){
+    .controller('mapCtrl', function($scope, $q, getCurrentLocation, favoritesManager){
 
-        /*getCurrentLocation.getLocation().then(
-            //success
-            function(){
-            var currentLat = getCurrentLocation.getCurrentLat();
-            var currentLon = getCurrentLocation.getCurrentLon();
+        console.log('init Map ctrl');
+        
+        var currentLat = getCurrentLocation.getCurrentLat();
+        var currentLon = getCurrentLocation.getCurrentLon();
 
-            console.log("Je suis dans le appMaps.then");
-
-            $scope.map = {
-                center: {
-                    latitude: currentLat,
-                    longitude: currentLon
-                },
-                zoom: 15
-            };
-        },
+        $scope.map = {
+            center: {
+                latitude: currentLat,
+                longitude: currentLon
+            },
+            zoom: 15
+        };
+    
         //reject
-        function(){
+        (function(){
             alert("Ca ne maaaaaarche pas !!")
-        });*/
+        });
 
         //$scope.map = getCurrentLocation().getInitMat();
 
@@ -157,8 +161,9 @@ angular.module('favoriteFilter', [])
             getLocation.deferred = $q.defer();
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position){
-                    showPosition(position,getLocation.deferred);
-                    getLocation.deferred.resolve("coucou");
+                    showPosition(position);
+                    console.log("resolve");
+                    getLocation.deferred.resolve();
                 });
             } else {
                 $('body').append("Geolocation is not supported by this browser.");
@@ -168,12 +173,9 @@ angular.module('favoriteFilter', [])
 
         };
 
-        function showPosition(position,deferred) {
+        function showPosition(position) {
             currentLat = position.coords.latitude;
             currentLon = position.coords.longitude;
-
-            console.log("resolve");
-            //deferred.resolve("coucou");
         }
 
         var getCurrentLat = function(){
