@@ -6,19 +6,29 @@
         var currentLon = 0;
 
         var getLocation = function(){
+            console.log("Coucou à toi Victor");
 
             getLocation.deferred = $q.defer();
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position){
                     showPosition(position,getLocation.deferred);
-
+                    getLocation.deferred.resolve("coucou");
                 });
             } else {
                 $('body').append("Geolocation is not supported by this browser.");
+                getLocation.deferred.reject("Ca ne MARCHE PAS !");
             }
             return getLocation.deferred.promise;
 
         };
+
+        function showPosition(position,deferred) {
+            currentLat = position.coords.latitude;
+            currentLon = position.coords.longitude;
+
+            console.log("resolve");
+            //deferred.resolve("coucou");
+        }
 
         var getCurrentLat = function(){
             return currentLat
@@ -28,17 +38,22 @@
             return currentLon
         };
 
-        function showPosition(position,deferred) {
-            currentLat = position.coords.latitude;
-            currentLon = position.coords.longitude;
+        var getInitMat = function(){
+            var initMap = {
+                center: {
+                    latitude: currentLat,
+                    longitude: currentLon
+                },
+                zoom: 15
+            };
+            return initMap
+        };
 
-
-            deferred.resolve("coucou");
-        }
         return {
             getLocation:getLocation,
             getCurrentLat : getCurrentLat,
-            getCurrentLon: getCurrentLon
+            getCurrentLon: getCurrentLon,
+            getInitMat: getInitMat
         };
     }
 ]);
@@ -54,10 +69,6 @@
 
         this.setFavorites = function(fav){
             favorites = fav;
-        };
-
-        this.pushFavorites = function(obj){
-            favorites.push(obj);
         };
     }
 ]);

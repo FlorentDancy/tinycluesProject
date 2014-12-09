@@ -3,12 +3,19 @@ angular.module('favoriteFilter', [])
         return function(equipmentsToFilter){
             var i, result =[];
 
-            for(i=0;i<equipmentsToFilter.length;i++){
-                if(equipmentsToFilter[i].checked){
-                    result.push(equipmentsToFilter[i]);
+            if(equipmentsToFilter){
+                for(i=0;i<equipmentsToFilter.length;i++){
+                    if(equipmentsToFilter[i].checked){
+                        result.push(equipmentsToFilter[i]);
+                    }
                 }
+                favoritesManager.setFavorites(result);
             }
-            favoritesManager.setFavorites(result);
+            else{
+                console.log("Tu t'es planté Jack");
+            }
+
+
             return result;
         };
     });
