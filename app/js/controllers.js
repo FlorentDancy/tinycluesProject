@@ -1,8 +1,7 @@
 angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
     .controller('equipmentsController',function($scope,$q,$resource,getCurrentLocation) {
 
-
-        console.log('innit Eq ctrl');
+        console.log('init Eq ctrl');
         /*$scope.equipments = [
              {
                  checked : false,
@@ -22,17 +21,15 @@ angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
              }
          ];*/
 
-        $scope.mapReady = false;
-
         console.log("Je suis dans le equipmentsAPP");
+        $scope.mapPromise = getCurrentLocation.getLocation();
 
-        getCurrentLocation.getLocation().then(function(){
+        $scope.mapPromise.then(function(){
             console.log("Je suis ICI");
             var currentLat = getCurrentLocation.getCurrentLat();
             var currentLon = getCurrentLocation.getCurrentLon();
 
             console.log('ready');
-            $scope.mapReady = true;
 
             // $scope.map = {
             //     center: {
@@ -82,16 +79,20 @@ angular.module('appMaps', ['uiGmapgoogle-maps'])
 
         console.log('init Map ctrl');
         
-        var currentLat = getCurrentLocation.getCurrentLat();
-        var currentLon = getCurrentLocation.getCurrentLon();
+        $scope.mapPromise.then(function(){
+            var currentLat = getCurrentLocation.getCurrentLat();
+            var currentLon = getCurrentLocation.getCurrentLon();
 
-        $scope.map = {
-            center: {
-                latitude: currentLat,
-                longitude: currentLon
-            },
-            zoom: 15
-        };
+            $scope.map = {
+                center: {
+                    latitude: currentLat,
+                    longitude: currentLon
+                },
+                zoom: 15
+            };
+
+        });
+
     
         //reject
         (function(){
