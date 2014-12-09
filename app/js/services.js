@@ -1,35 +1,45 @@
 
- angular.module("equipmentsApp").service("getCurrentLocation", [
-    function() {
+ angular.module("equipmentsApp").factory("getCurrentLocation", [ '$q',
+    function($q) {
 
         var currentLat = 0;
         var currentLon = 0;
 
-        /*
-        *
-        *
+        var getLocation = function(){
 
-        * */
-
-        this.getCurrentLat = function(){
-            getLocation();
-            console.log("currentLat dans getCurrentLat dans service avant return : " + currentLat);
-            return currentLat;
-        };
-
-        function getLocation() {
+            getLocation.deferred = $q.defer();
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
+                navigator.geolocation.getCurrentPosition(function(position){
+                    showPosition(position,getLocation.deferred);
+
+                });
             } else {
                 $('body').append("Geolocation is not supported by this browser.");
             }
-        }
+            return getLocation.deferred.promise;
 
-        function showPosition(position) {
+        };
+
+        var getCurrentLat = function(){
+            return currentLat
+        };
+
+        var getCurrentLon = function(){
+            return currentLon
+        };
+
+        function showPosition(position,deferred) {
             currentLat = position.coords.latitude;
             currentLon = position.coords.longitude;
-        }
 
+
+            deferred.resolve("coucou");
+        }
+        return {
+            getLocation:getLocation,
+            getCurrentLat : getCurrentLat,
+            getCurrentLon: getCurrentLon
+        };
     }
 ]);
 

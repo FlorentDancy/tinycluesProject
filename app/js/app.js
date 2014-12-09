@@ -1,5 +1,5 @@
 angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
-.controller('equipmentsController',function($scope,$resource/*,getCurrentLocation*/) {
+.controller('equipmentsController',function($scope,$q,$resource,getCurrentLocation) {
 
         var temp1 = $resource(
             'https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/?:path',
@@ -11,19 +11,10 @@ angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
             {path:"@path"}
         );
 
-        getLocation();
+        getCurrentLocation.getLocation().then(function(){
 
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-            } else {
-                $('body').append("Geolocation is not supported by this browser.");
-            }
-        }
-
-        function showPosition(position) {
-            currentLat = position.coords.latitude;
-            currentLon = position.coords.longitude;
+            var currentLat = getCurrentLocation.getCurrentLat();
+            var currentLon = getCurrentLocation.getCurrentLon();
 
             temp1.get({
                 path: "token=ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1&cid=27,29&offset=0&limit=10&lat="+currentLat+"&lon="+currentLon+"&radius=2000"
@@ -43,47 +34,18 @@ angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
                         , 200*key)
                 });
             });
-        }
 
-      /*$scope.equipments = [
-        {
-          checked : false,
-          name: "Maison",
-          adress: "51 Rue de Charonne",
-          postalCode: 75011,
-          latitude: 48.853593,
-          longitude: 2.378302
-        },
-        {
-          checked : false,
-          name: "Travail",
-          adress: "1 Avenue de la Cristallerie",
-          postalCode: 92310,
-          latitude: 48.827089,
-          longitude: 2.223838
-        }
-      ];*/
+        });
 
 });
 
 angular.module('appMaps', ['uiGmapgoogle-maps'])
-    .controller('mapCtrl', function($scope, getCurrentLocation, favoritesManager){
+    .controller('mapCtrl', function($scope, $q,getCurrentLocation, favoritesManager){
 
-        $scope.favoritesMarkers = [];
+        getCurrentLocation.getLocation().then(function(){
+            var currentLat = getCurrentLocation.getCurrentLat();
+            var currentLon = getCurrentLocation.getCurrentLon();
 
-        getLocation();
-
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-            } else {
-                $('body').append("Geolocation is not supported by this browser.");
-            }
-        }
-
-        function showPosition(position) {
-            currentLat = position.coords.latitude;
-            currentLon = position.coords.longitude;
             $scope.map = {
                 center: {
                     latitude: currentLat,
@@ -91,7 +53,11 @@ angular.module('appMaps', ['uiGmapgoogle-maps'])
                 },
                 zoom: 15
             };
-        }
+
+        });
+
+
+        $scope.favoritesMarkers = [];
 
         var markers = [];
 
@@ -133,37 +99,47 @@ angular.module('favoriteFilter', [])
         };
     });
 
- angular.module("equipmentsApp").service("getCurrentLocation", [
-    function() {
+ angular.module("equipmentsApp").factory("getCurrentLocation", [ '$q',
+    function($q) {
 
         var currentLat = 0;
         var currentLon = 0;
 
-        /*
-        *
-        *
+        var getLocation = function(){
 
-        * */
-
-        this.getCurrentLat = function(){
-            getLocation();
-            console.log("currentLat dans getCurrentLat dans service avant return : " + currentLat);
-            return currentLat;
-        };
-
-        function getLocation() {
+            getLocation.deferred = $q.defer();
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
+                navigator.geolocation.getCurrentPosition(function(position){
+                    showPosition(position,getLocation.deferred);
+
+                });
             } else {
                 $('body').append("Geolocation is not supported by this browser.");
             }
-        }
+            return getLocation.deferred.promise;
 
-        function showPosition(position) {
+        };
+
+        var getCurrentLat = function(){
+            return currentLat
+        };
+
+        var getCurrentLon = function(){
+            return currentLon
+        };
+
+        function showPosition(position,deferred) {
             currentLat = position.coords.latitude;
             currentLon = position.coords.longitude;
-        }
 
+
+            deferred.resolve("coucou");
+        }
+        return {
+            getLocation:getLocation,
+            getCurrentLat : getCurrentLat,
+            getCurrentLon: getCurrentLon
+        };
     }
 ]);
 
