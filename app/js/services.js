@@ -6,13 +6,11 @@
         var currentLon = 0;
 
         var getLocation = function(){
-            console.log("Coucou à toi Victor");
 
             getLocation.deferred = $q.defer();
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position){
                     showPosition(position);
-                    console.log("resolve");
                     getLocation.deferred.resolve();
                 });
             } else {

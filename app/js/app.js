@@ -1,45 +1,12 @@
 angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
-    .controller('equipmentsController',function($scope,$q,$resource,getCurrentLocation) {
+    .controller('EquipmentsController',function($scope,$q,$resource,getCurrentLocation) {
 
-        console.log('init Eq ctrl');
-        /*$scope.equipments = [
-             {
-                 checked : false,
-                 name: "Maison",
-                 adress: "51 Rue de Charonne",
-                 postalCode: 75011,
-                 latitude: 48.853593,
-                 longitude: 2.378302
-             },
-             {
-                 checked : false,
-                 name: "Travail",
-                 adress: "1 Avenue de la Cristallerie",
-                 postalCode: 92310,
-                 latitude: 48.827089,
-                 longitude: 2.223838
-             }
-         ];*/
-
-        console.log("Je suis dans le equipmentsAPP");
         $scope.mapPromise = getCurrentLocation.getLocation();
 
         $scope.mapPromise.then(function(){
-            console.log("Je suis ICI");
+
             var currentLat = getCurrentLocation.getCurrentLat();
             var currentLon = getCurrentLocation.getCurrentLon();
-
-            console.log('ready');
-
-            // $scope.map = {
-            //     center: {
-            //         latitude: currentLat,
-            //         longitude: currentLon
-            //     },
-            //     zoom: 15
-            // };
-
-            console.log("Je suis ICI2");
 
             var temp1 = $resource(
                 'https://api.paris.fr/api/data/1.1/Equipements/get_geo_equipements/?:path',
@@ -54,7 +21,6 @@ angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
             temp1.get({
                 path: "token=ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1&cid=27,29&offset=0&limit=10&lat="+currentLat+"&lon="+currentLon+"&radius=10000"
             }, function(data) {
-                console.log("Ca marche !");
                 $scope.equipments = data.data;
                 angular.forEach($scope.equipments,function(value,key){
                     setTimeout(function(){
@@ -75,9 +41,7 @@ angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
     });
 
 angular.module('appMaps', ['uiGmapgoogle-maps'])
-    .controller('mapCtrl', function($scope, $q, getCurrentLocation, favoritesManager){
-
-        console.log('init Map ctrl');
+    .controller('MapController', function($scope, $q, getCurrentLocation, favoritesManager){
         
         $scope.mapPromise.then(function(){
             var currentLat = getCurrentLocation.getCurrentLat();
@@ -93,14 +57,6 @@ angular.module('appMaps', ['uiGmapgoogle-maps'])
 
         });
 
-    
-        //reject
-        (function(){
-            alert("Ca ne maaaaaarche pas !!")
-        });
-
-        //$scope.map = getCurrentLocation().getInitMat();
-
         $scope.favoritesMarkers = [];
 
         var markers = [];
@@ -109,7 +65,6 @@ angular.module('appMaps', ['uiGmapgoogle-maps'])
         $scope.$watch(function() {
             return favoritesManager.getFavorites();
         }, function() {
-            console.log("Y'a du changement");
             markers=[];
             for (var i = 0; i < favoritesManager.getFavorites().length; i++) {
                 markers.push(
@@ -142,7 +97,7 @@ angular.module('favoriteFilter', [])
                 favoritesManager.setFavorites(result);
             }
             else{
-                console.log("Tu t'es planté Jack");
+                console.log("Problème dans l'exécution du filtre (Problème avec l'API de Paris)");
             }
 
 
@@ -157,13 +112,11 @@ angular.module('favoriteFilter', [])
         var currentLon = 0;
 
         var getLocation = function(){
-            console.log("Coucou à toi Victor");
 
             getLocation.deferred = $q.defer();
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position){
                     showPosition(position);
-                    console.log("resolve");
                     getLocation.deferred.resolve();
                 });
             } else {

@@ -19,7 +19,7 @@
 
 <body >
 
-  <div class="row" ng-app="equipmentsApp" ng-controller="equipmentsController">
+  <div class="row" ng-app="equipmentsApp" ng-controller="EquipmentsController">
     <div class="col-md-6">
       <table class="equipmentsTable table">
         <thead>
@@ -82,7 +82,7 @@
 
 
 
-    <div class="col-md-10 col-md-offset-1" id="map_canvas" ng-controller="mapCtrl">
+    <div class="col-md-10 col-md-offset-1" id="map_canvas" ng-controller="MapController">
       <div >
         <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" options="options">
           <ui-gmap-markers models="favoritesMarkers" coords="'self'" icon="'icon'">

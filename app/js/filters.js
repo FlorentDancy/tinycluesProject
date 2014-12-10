@@ -12,7 +12,7 @@ angular.module('favoriteFilter', [])
                 favoritesManager.setFavorites(result);
             }
             else{
-                console.log("Tu t'es planté Jack");
+                console.log("Problème dans l'exécution du filtre (Problème avec l'API de Paris)");
             }
 
 
