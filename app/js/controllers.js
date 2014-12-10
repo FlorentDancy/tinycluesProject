@@ -18,8 +18,15 @@ angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
                 {path:"@path"}
             );
 
+            //TODO Pour modifier les paramètres à envoyer à l'API, c'est juste en dessous !
+            var token = "ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1";
+            var cid = "27,29";
+            var offset = "0";
+            var limit = "5";
+            var radius = "1000";
+
             temp1.get({
-                path: "token=ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1&cid=27,29&offset=0&limit=10&lat="+currentLat+"&lon="+currentLon+"&radius=10000"
+                path: "token="+token+"&cid="+cid+"&offset="+offset+"&limit="+limit+"&lat="+currentLat+"&lon="+currentLon+"&radius=" + radius
             }, function(data) {
                 $scope.equipments = data.data;
                 angular.forEach($scope.equipments,function(value,key){
@@ -35,9 +42,7 @@ angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
                     }, 200*key)
                 });
             });
-
         });
-
     });
 
 angular.module('appMaps', ['uiGmapgoogle-maps'])
@@ -52,7 +57,7 @@ angular.module('appMaps', ['uiGmapgoogle-maps'])
                     latitude: currentLat,
                     longitude: currentLon
                 },
-                zoom: 15
+                zoom: 14
             };
 
         });
