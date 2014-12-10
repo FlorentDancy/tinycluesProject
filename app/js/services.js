@@ -2,6 +2,7 @@
  angular.module("equipmentsApp").factory("getCurrentLocation", [ '$q',
     function($q) {
 
+
         var currentLat = 0;
         var currentLon = 0;
 

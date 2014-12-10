@@ -54,6 +54,11 @@ module.exports = function (grunt){
                 tasks:['sass','cssmin'],
                 options:{spawn: false}
             }
+            //,
+            //karma: {
+            //    files: ['app/js/**/*.js', 'app/test/**/*.js'],
+            //    tasks: ['karma:unit:run'] //NOTE the :run flag
+            //}
         },
 
         imagemin: {
@@ -76,6 +81,14 @@ module.exports = function (grunt){
                     to: "app/img/min/"
                 }]
             }
+        },
+
+        karma: {
+            unit: {
+                configFile: 'myKarma.conf.js',
+                background: true,
+                singleRun: false
+            }
         }
 
     });
@@ -88,6 +101,7 @@ module.exports = function (grunt){
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-text-replace');
     grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-karma');
 
     // Default task(s).
     grunt.registerTask('default', [/*'jshint',*/'concat','uglify','sass','cssmin'/*,'imagemin',"replace"*/]);

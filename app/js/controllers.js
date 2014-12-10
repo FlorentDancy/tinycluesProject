@@ -20,7 +20,7 @@ angular.module('equipmentsApp.controllers', ['ngResource','appMaps'])
 
             //TODO Pour modifier les paramètres à envoyer à l'API, c'est juste en dessous !
             var token = "ec8492667356ee806e5de5d0d322a51708b094a75abf07b0024edfa09ca25aa1";
-            var cid = "27,29";
+            var cid = "27,29,47,238,239,266,329,57,12,74,9,315,38,316,318,235,237,240,177,86,245,15,28,83,64,290,61,295,62,60,311,17,40,34";
             var offset = "0";
             var limit = "5";
             var radius = "1000";
