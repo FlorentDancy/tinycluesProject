@@ -3,6 +3,16 @@ tinycluesProject
 
 POC Angular pour Tinyclues
 
+Pour installer l'appli
+
+NPM install
+Bower Install
+bower install angular-google-maps
+bower install angular-resource
+
+Pour démarrer le serveur :
+npm start
+
 ================
 
 # angular-seed — the seed for AngularJS apps
